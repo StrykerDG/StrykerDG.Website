@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:strykerdg_webclient/widgets/header/header_button.dart';
+
 import 'package:strykerdg_webclient/utilities/constants.dart';
 
 class Header extends StatelessWidget {
@@ -19,11 +21,33 @@ class Header extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Center(child: Text('First', style: TextStyle(color: kSecondaryColor))),
-              Center(child: Text('Second', style: TextStyle(color: kSecondaryColor))),
               Expanded(child: Container()),
-              Center(child: Text('Third', style: TextStyle(color: kSecondaryColor))),
-              Center(child: Text('Fourth', style: TextStyle(color: kSecondaryColor)))
+              HeaderButton(
+                label: 'Projects',
+                onPressed: () { print('Pressed'); },
+              ),
+              HeaderButton(
+                label: 'Blogs',
+                onPressed: () { print('Pressed'); },
+              ),
+              HeaderButton(
+                label: 'Videos',
+                onPressed: () { print('Pressed'); },
+              ),
+              Expanded(child: Container()),
+              HeaderButton(
+                label: 'About',
+                onPressed: () { print('Pressed'); },
+              ),
+              HeaderButton(
+                label: 'Community',
+                onPressed: () { print('Pressed'); },
+              ),
+              HeaderButton(
+                label: 'Store',
+                onPressed: () { print('Pressed'); },
+              ),
+              Expanded(child: Container()),
             ],
           ),
         ),
