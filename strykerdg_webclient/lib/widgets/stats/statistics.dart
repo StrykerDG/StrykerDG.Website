@@ -1,24 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:strykerdg_webclient/models/github/github_user.dart';
 
+import 'package:strykerdg_webclient/models/statistics/statistics_model.dart';
 import 'package:strykerdg_webclient/widgets/stats/rounded_barchart.dart';
 
-class Statistics extends StatelessWidget {
-  static final data = [
-      RepoData('StrykerDG.Discord.StrykerBot', 15, charts.MaterialPalette.black),
-      RepoData('StrykerDG.FarmForge', 18, charts.MaterialPalette.blue.shadeDefault),
-      RepoData('StrykerDG.Apis.StrykerApi', 7, charts.MaterialPalette.gray.shadeDefault)
-  ];
+import 'package:strykerdg_webclient/services/stryker_api_service.dart';
 
-  final List<charts.Series<RepoData, String>> repoData = [
-    charts.Series<RepoData, String>(
-      id: 'Repo Data',
-      colorFn: (RepoData data, _) => data.color,
-      domainFn: (RepoData data, _) => data.repo,
-      measureFn: (RepoData data, _) => data.quantity,
-      data: data
-    )
-  ];
+class Statistics extends StatefulWidget {
+
+  @override
+  _StatisticsState createState() => _StatisticsState();
+}
+
+class _StatisticsState extends State<Statistics> {
+  List<charts.Series<StatisticsData, String>> githubData =
+      new List<charts.Series<StatisticsData, String>>();
+  List<charts.Series<StatisticsData, String>> twitchData =
+      new List<charts.Series<StatisticsData, String>>();
+
+  void loadStatistics() async {
+    try {
+      GitHubUser gitHubUser = await StrykerApiService.getGithubUser('strykerdg');
+
+      setState(() {
+        githubData = generateGitHubData(gitHubUser);
+      });
+    }
+    catch(e) {}
+  }
+
+  List<charts.Series<StatisticsData, String>> generateGitHubData(GitHubUser user) {
+    final data = [
+      StatisticsData(
+        label: 'Repos',
+        quantity: user.publicRepos,
+        color: charts.MaterialPalette.black
+      ),
+      StatisticsData(
+        label: 'Gists',
+        quantity: user.publicGists,
+        color: charts.MaterialPalette.blue.shadeDefault
+      ),
+      StatisticsData(
+        label: 'Followers',
+        quantity: user.followers,
+        color: charts.MaterialPalette.gray.shadeDefault
+      ),
+      StatisticsData(
+        label: 'Following',
+        quantity: user.following,
+        color: charts.MaterialPalette.cyan.shadeDefault
+      )
+    ];
+
+    return [
+      charts.Series<StatisticsData, String>(
+        id: 'GitHubData',
+        colorFn: (StatisticsData data, _) => data.color,
+        domainFn: (StatisticsData data, _) => data.label,
+        measureFn: (StatisticsData data, _) => data.quantity,
+        data: data
+      )
+    ];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    loadStatistics();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,33 +80,19 @@ class Statistics extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           RoundedBarChart(
-            data: repoData,
+            data: githubData,
             height: 400,
             width: 300,
-            title: 'Repo Data',
+            title: 'GitHub',
           ),
           RoundedBarChart(
-            data: repoData,
+            data: twitchData,
             height: 400,
             width: 300,
-            title: 'Twitch Data',
-          ),
-          RoundedBarChart(
-            data: repoData,
-            height: 400,
-            width: 300,
-            title: 'Game Data',
+            title: 'Twitch',
           ),
         ],
       ),
     );
   }
-}
-
-class RepoData {
-  final int quantity;
-  final String repo;
-  final charts.Color color;
-
-  RepoData(this.repo, this.quantity, this.color);
 }

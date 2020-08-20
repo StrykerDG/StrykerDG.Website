@@ -24,6 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Http requests
+  http: ^0.12.2
+
   # Charts
   charts_flutter: ^0.9.0
 
