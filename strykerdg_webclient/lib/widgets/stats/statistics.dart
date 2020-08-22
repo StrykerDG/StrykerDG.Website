@@ -3,6 +3,8 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:strykerdg_webclient/models/github/github_user.dart';
 
 import 'package:strykerdg_webclient/models/statistics/statistics_model.dart';
+import 'package:strykerdg_webclient/models/twitch/twitch_user.dart';
+
 import 'package:strykerdg_webclient/widgets/stats/rounded_barchart.dart';
 
 import 'package:strykerdg_webclient/services/stryker_api_service.dart';
@@ -21,17 +23,22 @@ class _StatisticsState extends State<Statistics> {
 
   void loadStatistics() async {
     try {
+      // TODO: fetch data concurrently
       GitHubUser gitHubUser = await StrykerApiService.getGithubUser('strykerdg');
+      TwitchUser twitchUser = await StrykerApiService.getTwitchUser('strykerdg');
 
       setState(() {
         githubData = generateGitHubData(gitHubUser);
+        twitchData = generateTwitchData(twitchUser);
       });
     }
-    catch(e) {}
+    catch(e) {
+      print('Error! ${e.toString()}');
+    }
   }
 
   List<charts.Series<StatisticsData, String>> generateGitHubData(GitHubUser user) {
-    final data = [
+    final List<StatisticsData> data = [
       StatisticsData(
         label: 'Repos',
         quantity: user.publicRepos,
@@ -57,6 +64,31 @@ class _StatisticsState extends State<Statistics> {
     return [
       charts.Series<StatisticsData, String>(
         id: 'GitHubData',
+        colorFn: (StatisticsData data, _) => data.color,
+        domainFn: (StatisticsData data, _) => data.label,
+        measureFn: (StatisticsData data, _) => data.quantity,
+        data: data
+      )
+    ];
+  }
+
+  List<charts.Series<StatisticsData, String>> generateTwitchData(TwitchUser user) {
+    final List<StatisticsData> data = [
+      StatisticsData(
+        label: 'Followers',
+        quantity: user.followers.total,
+        color: charts.MaterialPalette.black
+      ),
+      StatisticsData(
+        label: 'Views',
+        quantity: user.user.viewCount,
+        color: charts.MaterialPalette.blue.shadeDefault
+      ),
+    ];
+
+    return [
+      charts.Series<StatisticsData, String>(
+        id: 'TwitchData',
         colorFn: (StatisticsData data, _) => data.color,
         domainFn: (StatisticsData data, _) => data.label,
         measureFn: (StatisticsData data, _) => data.quantity,

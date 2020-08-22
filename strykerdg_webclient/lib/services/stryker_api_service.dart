@@ -2,6 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
 import 'package:strykerdg_webclient/models/github/github_user.dart';
+import 'package:strykerdg_webclient/models/twitch/twitch_user.dart';
 
 class StrykerApiService {
   static String apiUrl;
@@ -43,5 +44,11 @@ class StrykerApiService {
   static Future<GitHubUser> getGithubUser(String username) async {
     dynamic response = await request('GitHub/User/$username', null, 'GET');
     return GitHubUser.fromDynamic(response);
+  }
+
+  // Twitch
+  static Future<TwitchUser> getTwitchUser(String username) async {
+    dynamic response = await request('Twitch/User/$username', null, 'GET');
+    return TwitchUser.fromDyamic(response);
   }
 }
