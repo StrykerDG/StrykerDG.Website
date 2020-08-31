@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:strykerdg_webclient/widgets/header/header_button.dart';
 
+import 'package:strykerdg_webclient/screens/not_found_screen/not_found_screen.dart';
+
 import 'package:strykerdg_webclient/utilities/constants.dart';
 
 class Header extends StatelessWidget {
@@ -24,28 +26,28 @@ class Header extends StatelessWidget {
               Expanded(child: Container()),
               HeaderButton(
                 label: 'Projects',
-                onPressed: () { print('Pressed'); },
+                onPressed: () { Navigator.pushNamed(context, NotFoundScreen.id); },
               ),
               HeaderButton(
                 label: 'Blogs',
-                onPressed: () { print('Pressed'); },
+                onPressed: () { Navigator.pushNamed(context, NotFoundScreen.id); },
               ),
               HeaderButton(
                 label: 'Videos',
-                onPressed: () { print('Pressed'); },
+                onPressed: () { Navigator.pushNamed(context, NotFoundScreen.id); },
               ),
               Expanded(child: Container()),
               HeaderButton(
                 label: 'About',
-                onPressed: () { print('Pressed'); },
+                onPressed: () { Navigator.pushNamed(context, NotFoundScreen.id); },
               ),
               HeaderButton(
                 label: 'Community',
-                onPressed: () { print('Pressed'); },
+                onPressed: () { Navigator.pushNamed(context, NotFoundScreen.id); },
               ),
               HeaderButton(
                 label: 'Store',
-                onPressed: () { print('Pressed'); },
+                onPressed: () { Navigator.pushNamed(context, NotFoundScreen.id); },
               ),
               Expanded(child: Container()),
             ],

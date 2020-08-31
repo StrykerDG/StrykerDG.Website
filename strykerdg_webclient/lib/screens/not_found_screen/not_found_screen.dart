@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:strykerdg_webclient/screens/base_screen/base_screen.dart';
 
-import 'package:strykerdg_webclient/widgets/stats/statistics.dart';
-
-class HomeScreen extends StatelessWidget {
-  static const id = '/home';
+class NotFoundScreen extends StatelessWidget {
+  static const id = '/404';
 
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
       content: [
-        Statistics()
+        Text('404 Not Found')
       ],
     );
   }
