@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:strykerdg_webclient/models/github/github_user.dart';
 
+import 'package:strykerdg_webclient/models/clockify/clockify_time_summary.dart';
+import 'package:strykerdg_webclient/models/github/github_user.dart';
 import 'package:strykerdg_webclient/models/statistics/statistics_model.dart';
 import 'package:strykerdg_webclient/models/twitch/twitch_user.dart';
 
@@ -20,16 +21,20 @@ class _StatisticsState extends State<Statistics> {
       new List<charts.Series<StatisticsData, String>>();
   List<charts.Series<StatisticsData, String>> twitchData =
       new List<charts.Series<StatisticsData, String>>();
+  List<charts.Series<StatisticsData, String>> clockifyData = 
+      new List<charts.Series<StatisticsData, String>>();
 
   void loadStatistics() async {
     try {
       // TODO: fetch data concurrently
       GitHubUser gitHubUser = await StrykerApiService.getGithubUser('strykerdg');
       TwitchUser twitchUser = await StrykerApiService.getTwitchUser('strykerdg');
+      ClockifyTimeSummary timeSummary = await StrykerApiService.getClockifyTimeSummary();
 
       setState(() {
         githubData = generateGitHubData(gitHubUser);
         twitchData = generateTwitchData(twitchUser);
+        clockifyData = generateClockifyData(timeSummary);
       });
     }
     catch(e) {
@@ -97,6 +102,36 @@ class _StatisticsState extends State<Statistics> {
     ];
   }
 
+  List<charts.Series<StatisticsData, String>> generateClockifyData(ClockifyTimeSummary summary) {
+    final List<StatisticsData> data = [
+      StatisticsData(
+        label: "Gaming",
+        quantity: summary.gaming ~/ 60,
+        color: charts.MaterialPalette.black
+      ),
+      StatisticsData(
+        label: "Development",
+        quantity: summary.development ~/ 60,
+        color: charts.MaterialPalette.blue.shadeDefault
+      ),
+      StatisticsData(
+        label: "Streaming",
+        quantity: summary.streaming ~/ 60,
+        color: charts.MaterialPalette.gray.shadeDefault
+      ),
+    ];
+
+    return [
+      charts.Series<StatisticsData, String>(
+        id: 'ClockifyData',
+        colorFn: (StatisticsData data, _) => data.color,
+        domainFn: (StatisticsData data, _) => data.label,
+        measureFn: (StatisticsData data, _) => data.quantity,
+        data: data
+      )
+    ];
+  }
+
   @override
   void initState() {
     super.initState();
@@ -123,6 +158,12 @@ class _StatisticsState extends State<Statistics> {
             width: 300,
             title: 'Twitch',
           ),
+          RoundedBarChart(
+            data: clockifyData,
+            height: 400,
+            width: 300,
+            title: 'Clockify'
+          )
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'dart:convert' as convert;
 
 import 'package:strykerdg_webclient/models/github/github_user.dart';
 import 'package:strykerdg_webclient/models/twitch/twitch_user.dart';
+import 'package:strykerdg_webclient/models/clockify/clockify_time_summary.dart';
 
 class StrykerApiService {
   static String apiUrl;
@@ -50,5 +51,11 @@ class StrykerApiService {
   static Future<TwitchUser> getTwitchUser(String username) async {
     dynamic response = await request('Twitch/User/$username', null, 'GET');
     return TwitchUser.fromDyamic(response);
+  }
+
+  // Clockify
+  static Future<ClockifyTimeSummary> getClockifyTimeSummary() async {
+    dynamic response = await request('Clockify/TimeEntries', null, 'GET');
+    return ClockifyTimeSummary.fromDynamic(response);
   }
 }
